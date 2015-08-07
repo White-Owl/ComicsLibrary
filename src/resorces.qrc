@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Images/magazine_26.png</file>
+        <file>Images/magazine_32.png</file>
+        <file>Images/magazine_48.png</file>
+        <file>Images/magazine_64.png</file>
+        <file>Images/magazine_128.png</file>
+        <file>Images/magazine_256.png</file>
+        <file>Images/magazine_512.png</file>
+        <file>Images/refresh.png</file>
+        <file>Images/Book Stack.png</file>
+        <file>Images/Download.png</file>
+        <file>Images/logo-mangahere.png</file>
+        <file>Images/logo-batoto.png</file>
+    </qresource>
+</RCC>

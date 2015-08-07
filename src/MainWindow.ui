@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>773</width>
+    <height>595</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resorces.qrc">
+    <normaloff>:/Images/magazine_32.png</normaloff>:/Images/magazine_32.png</iconset>
+  </property>
+  <property name="documentMode">
+   <bool>true</bool>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QMdiArea" name="mdiArea">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="activationOrder">
+       <enum>QMdiArea::StackingOrder</enum>
+      </property>
+      <property name="viewMode">
+       <enum>QMdiArea::TabbedView</enum>
+      </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
+      <property name="tabsMovable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>773</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuLibrary">
+    <property name="title">
+     <string>Library</string>
+    </property>
+    <widget class="QMenu" name="menuOpen_External_Source">
+     <property name="title">
+      <string>Open External Source</string>
+     </property>
+     <addaction name="actionBatoto"/>
+     <addaction name="actionMangaHere"/>
+    </widget>
+    <addaction name="actionChoose_Library"/>
+    <addaction name="menuOpen_External_Source"/>
+    <addaction name="separator"/>
+    <addaction name="actionOptions"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars">
+     <property name="title">
+      <string>Toolbars</string>
+     </property>
+     <addaction name="actionGeneral_Tools"/>
+     <addaction name="actionExternal_Sources"/>
+    </widget>
+    <addaction name="menuToolbars"/>
+    <addaction name="actionHistory"/>
+    <addaction name="actionNetwork_Queue"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionAbout_Qt"/>
+   </widget>
+   <addaction name="menuLibrary"/>
+   <addaction name="menuView"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="windowTitle">
+    <string>General Tools</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionCheck_for_new_issues"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar_Object"/>
+  <widget class="QDockWidget" name="historyWindow">
+   <property name="windowTitle">
+    <string>History</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
+  <widget class="QDockWidget" name="queueWindow">
+   <property name="windowTitle">
+    <string>Network Queue</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2"/>
+  </widget>
+  <widget class="QToolBar" name="externalSourcesToolBar">
+   <property name="windowTitle">
+    <string>External Sources</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionBatoto"/>
+   <addaction name="actionMangaHere"/>
+  </widget>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionChoose_Library">
+   <property name="text">
+    <string>Choose Local Library</string>
+   </property>
+  </action>
+  <action name="actionCheck_for_new_issues">
+   <property name="icon">
+    <iconset resource="resorces.qrc">
+     <normaloff>:/Images/Download.png</normaloff>:/Images/Download.png</iconset>
+   </property>
+   <property name="text">
+    <string>Check for new issues</string>
+   </property>
+   <property name="toolTip">
+    <string>Check all (not disabled) comics for missing or new issues</string>
+   </property>
+  </action>
+  <action name="actionHistory">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>History</string>
+   </property>
+  </action>
+  <action name="actionNetwork_Queue">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Network Queue</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="text">
+    <string>Options</string>
+   </property>
+  </action>
+  <action name="actionMangaHere">
+   <property name="icon">
+    <iconset resource="resorces.qrc">
+     <normaloff>:/Images/logo-mangahere.png</normaloff>:/Images/logo-mangahere.png</iconset>
+   </property>
+   <property name="text">
+    <string>MangaHere</string>
+   </property>
+   <property name="toolTip">
+    <string>www.ManagaHere.com</string>
+   </property>
+  </action>
+  <action name="actionExternal_Sources">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>External Sources</string>
+   </property>
+  </action>
+  <action name="actionBatoto">
+   <property name="icon">
+    <iconset resource="resorces.qrc">
+     <normaloff>:/Images/logo-batoto.png</normaloff>:/Images/logo-batoto.png</iconset>
+   </property>
+   <property name="text">
+    <string>Batoto</string>
+   </property>
+   <property name="toolTip">
+    <string>bato.to</string>
+   </property>
+  </action>
+  <action name="actionGeneral_Tools">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>General Tools</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="resorces.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionHistory</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>historyWindow</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>194</x>
+     <y>555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNetwork_Queue</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>queueWindow</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>581</x>
+     <y>555</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionExternal_Sources</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>externalSourcesToolBar</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>37</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionQuit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>386</x>
+     <y>297</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>externalSourcesToolBar</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>actionExternal_Sources</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>407</x>
+     <y>37</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionGeneral_Tools</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>mainToolBar</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>21</x>
+     <y>37</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mainToolBar</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>actionGeneral_Tools</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>21</x>
+     <y>37</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>queueWindow</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>actionNetwork_Queue</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>579</x>
+     <y>555</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>historyWindow</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>actionHistory</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>192</x>
+     <y>555</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
