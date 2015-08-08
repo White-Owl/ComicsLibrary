@@ -168,7 +168,7 @@ void LocalLibrary::libraryView_selectionChanged(const QModelIndex &selected, con
     updateComicDescription(selected);
 }
 
-void LocalLibrary::on_quickTabs_tabBarClicked(int index) {
+void LocalLibrary::on_quickTabs_currentChanged(int index) {
     uint row = quickTabs->tabData(index).toUInt();
     libraryView->scrollTo(libraryData->index(row,0));
     libraryView->setCurrentIndex(libraryData->index(row,0));
@@ -181,7 +181,7 @@ void LocalLibrary::on_comicDisableUpdates_toggled(bool checked) {
     comicInfo.setValue(cSettingsKey_updatable, checked);
 }
 
-void LocalLibrary::on_comicSource_currentTextChanged(const QString &text) {
+void LocalLibrary::on_comicSource_currentIndexChanged(const QString &text) {
     QString infoFile = QString("%1/%2/info.ini").arg(libraryPath)
             .arg(libraryData->data(libraryView->currentIndex()).toString());
     QSettings comicInfo(infoFile, QSettings::IniFormat);

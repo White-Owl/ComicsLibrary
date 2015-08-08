@@ -25,9 +25,9 @@ private slots:
     void on_libraryView_activated(const QModelIndex &index);
     void libraryView_selectionChanged(const QModelIndex &selected, const QModelIndex &deselected);
     void on_iconSizeSelector_valueChanged(int value);
-    void on_quickTabs_tabBarClicked(int index);
+    void on_quickTabs_currentChanged(int index);
     void on_comicDisableUpdates_toggled(bool checked);
-    void on_comicSource_currentTextChanged(const QString &text);
+    void on_comicSource_currentIndexChanged(const QString &text);
 };
 
 #endif // LOCALLIBRARY_H

@@ -43,7 +43,6 @@ void MainWindow::closeEvent(QCloseEvent *e) {
 void MainWindow::openSubWindow(QWidget *window) {
     QMdiSubWindow *ma = mdiArea->addSubWindow(window);
     ma->setWindowState(Qt::WindowMaximized);
-    ma->setFocus();
 }
 
 
@@ -55,6 +54,7 @@ void MainWindow::on_actionChoose_Library_triggered() {
     if(localLibraryWindow->chooseLibraryRoot()) {
         localLibraryWindow->readLibrary();
     }
+    localLibraryWindow->setFocus();
 }
 
 void MainWindow::openExternalSource(ComicsSource *cs) {
@@ -62,7 +62,8 @@ void MainWindow::openExternalSource(ComicsSource *cs) {
         externalLibraryWindow = new ExternalLibrary(this);
         openSubWindow(externalLibraryWindow );
     }
-    externalLibraryWindow ->setSource(cs);
+    externalLibraryWindow->setSource(cs);
+    externalLibraryWindow->setFocus();
 }
 
 void MainWindow::on_actionMangaHere_triggered() {
