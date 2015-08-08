@@ -20,7 +20,7 @@ LocalLibrary::LocalLibrary(QWidget *parent) : QWidget(parent) {
         defaultComicIcon.addFile(iconName);
     }
     quickTabs->setShape(QTabBar::RoundedWest);
-    quickTabs->setAutoHide(true);
+    //quickTabs->setAutoHide(true);
     quickTabs->setExpanding(true);
     quickTabs->setDocumentMode(true);
 }

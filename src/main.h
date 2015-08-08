@@ -9,7 +9,6 @@
 
 #include <QtCore>
 #include <QtGui>
-#include <QtWidgets>
 
 EXTERN QSettings *settings;
 #define settingsKey_iconSize       "iconSize"

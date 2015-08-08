@@ -24,7 +24,8 @@ void ExternalLibrary::closeEvent(QCloseEvent *e) {
 void ExternalLibrary::setSource(ComicsSource *source) {
     this->source = source;
     setWindowTitle(source->sourceName);
-    connect(source, SIGNAL(readyListOfTitles(QString)), this, SLOT(finishedListOfTitles(QString)));
+    this->setEnabled(false);
+
     QFileInfo fi(settings->fileName());
     cashedListName = QString("%1/%2.dat").arg(fi.path()).arg(source->sourceName);
     QFile cashedList(cashedListName);
@@ -43,11 +44,11 @@ void ExternalLibrary::setSource(ComicsSource *source) {
         }
         cashedList.close();
         qDebug() << source->comicsData.keys();
-        emit source->readyListOfTitles("");
+        finishedListOfTitles("");
     } else {
+        connect(source, SIGNAL(readyListOfTitles(QString)), this, SLOT(finishedListOfTitles(QString)));
     //    source->requestListOfTitles();
     }
-    this->setEnabled(false);
     qDebug() << cashedList.fileName();
 }
 
@@ -74,11 +75,11 @@ void ExternalLibrary::finishedListOfTitles(QString error){
 
 
 
-    QHashIterator<QString, Comics> itr(source->comicsData);
+    /*QHashIterator<QString, Comics> itr(source->comicsData);
     while (itr.hasNext()) {
         itr.next();
         cashedList << itr.key() << '\t' << itr.value().url << endl;
-    }
+    }*/
 
 
     this->setEnabled(true);
