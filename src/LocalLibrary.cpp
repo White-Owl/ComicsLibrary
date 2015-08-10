@@ -2,6 +2,7 @@
 #include "main.h"
 
 static const int iconSizes[] = {0, 26, 32, 48, 64, 128, 256, 512};
+static const char descriptionFileName[] = "description.txt";
 
 LocalLibrary::LocalLibrary(QWidget *parent) : QWidget(parent) {
     setupUi(this);
@@ -10,7 +11,11 @@ LocalLibrary::LocalLibrary(QWidget *parent) : QWidget(parent) {
 
     libraryPath = settings->value(settingsKey_libraryPath).toString();
     libraryData = new QStandardItemModel(this);
-    libraryView->setModel(libraryData);
+    filterLibrary = new QSortFilterProxyModel(this);
+    filterLibrary->setSourceModel(libraryData);
+    libraryView->setModel(filterLibrary);
+    filterLibrary->setFilterCaseSensitivity(Qt::CaseInsensitive);
+
     iconSizeSelector->setValue(settings->value(settingsKey_iconSize, 0).toInt());
     connect(libraryView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this, SLOT(libraryView_selectionChanged(QModelIndex,QModelIndex)));
@@ -19,10 +24,6 @@ LocalLibrary::LocalLibrary(QWidget *parent) : QWidget(parent) {
         QString iconName = QString(":Images/magazine_%1.png").arg(iconSizes[i]);
         defaultComicIcon.addFile(iconName);
     }
-    quickTabs->setShape(QTabBar::RoundedWest);
-    //quickTabs->setAutoHide(true);
-    quickTabs->setExpanding(true);
-    quickTabs->setDocumentMode(true);
 }
 
 void LocalLibrary::changeEvent(QEvent *e) {
@@ -71,8 +72,6 @@ bool LocalLibrary::readLibrary() {
     libraryData->clear();
     if(libraryPath.isEmpty() && !chooseLibraryRoot()) return false;
     QDir libraryDir(libraryPath);
-    QChar prevAccessBy=' ';
-    uint comicsesFound = 0;
     foreach(QString folderName, libraryDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
         QStandardItem *item = new QStandardItem();
         item->setText(folderName);
@@ -89,77 +88,66 @@ bool LocalLibrary::readLibrary() {
             item->setIcon(defaultComicIcon);
         }
         libraryData->appendRow(item);
-
-        QChar accessBy = folderName.at(0).toUpper();
-        if(accessBy<'A') accessBy = '#';
-        if(accessBy != prevAccessBy) {
-            int tabIndex = quickTabs->addTab(accessBy);
-            quickTabs->setTabData(tabIndex, comicsesFound);
-            prevAccessBy = accessBy;
-        }
-        comicsesFound ++;
     }
     updateComicDescription(QModelIndex());
     return true;
 }
 
 void LocalLibrary::updateComicDescription(const QModelIndex &index) {
-    if(index.isValid()) {
-        QString folderName = libraryData->data( index ).toString();
-        comicTitle->setText(folderName);
+    if(index.isValid() && index.model()==filterLibrary) {
+        QModelIndex dataIndex = filterLibrary->mapToSource(index);
+        QVariant item = libraryData->data( dataIndex );
+        qDebug() << "describe" << item;
+
+        QString folderName = libraryData->data( dataIndex ).toString();
+        comicsTitle->setText(folderName);
         QDir folder(QString("%1/%2").arg(libraryPath).arg(folderName));
         QStringList covers = folder.entryList(QStringList()<<"cover.png"<<"cover.jpg"<<"cover.gif", QDir::NoFilter, QDir::Name);
         if(covers.count()>0) {
             QPixmap coverImage(QPixmap(QString("%1/%2/%3").arg(libraryPath).arg(folderName).arg(covers[0])));
-            comicCover->setPixmap(coverImage.scaled(QSize(256,256), Qt::KeepAspectRatio));
+            comicsCover->setPixmap(coverImage.scaled(QSize(256,256), Qt::KeepAspectRatio));
             //comicCover->setPixmap(coverImage);
         } else {
-            comicCover->setPixmap(QPixmap(":/Images/magazine_256.png"));
+            comicsCover->setPixmap(QPixmap(":/Images/magazine_256.png"));
         }
 
         QStringList folderContents = folder.entryList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files, QDir::Name);
         QRegExp possibleChapterNames("^[^.]*$|.*\\.cbz");
         QStringList chapters = folderContents.filter(possibleChapterNames);
 
-        comicTotalIssues->setText(QString("%1").arg(chapters.count()));
+        comicsTotalIssues->setText(QString("%1").arg(chapters.count()));
 
-        QChar accessBy = folderName.at(0).toUpper();
-        if(accessBy<'A') accessBy='#';
-        for(int i=0; i<quickTabs->count(); i++) {
-            if(quickTabs->tabText(i) == accessBy) {
-                quickTabs->setCurrentIndex(i);
-                break;
-            }
-        }
-        comicSource->setEnabled(true);
+        comicsSource->setEnabled(true);
 
-        QString infoFile = QString("%1/%2/info.ini").arg(libraryPath)
-                .arg(libraryData->data(libraryView->currentIndex()).toString());
-        QSettings comicInfo(infoFile, QSettings::IniFormat);
-        comicSource->setCurrentIndex(
-                    comicSource->findText(comicInfo.value(cSettingsKey_source).toString())
+        QString infoFile = QString("%1/%2/%3").arg(libraryPath).arg(folderName).arg(descriptionFileName);
+        QSettings comicsInfo(infoFile, QSettings::IniFormat);
+        qDebug() << comicsInfo.value(cSettingsKey_summary).toString();
+        comicsSummary->setText(comicsInfo.value(cSettingsKey_summary).toString());
+        comicsSource->setCurrentIndex(
+                    comicsSource->findText(comicsInfo.value(cSettingsKey_source).toString())
                     );
-        if(comicSource->currentIndex()<0) {
-            comicDisableUpdates->setEnabled(false);
-            comicDisableUpdates->setChecked(true);
+        if(comicsSource->currentIndex()<0) {
+            comicsDisableUpdates->setEnabled(false);
+            comicsDisableUpdates->setChecked(true);
         } else {
-            comicDisableUpdates->setChecked(comicInfo.value(cSettingsKey_updatable, true).toBool());
+            comicsDisableUpdates->setChecked(comicsInfo.value(cSettingsKey_updatable, true).toBool());
         }
+
     } else {
-        comicTitle->setText(QString(tr("Local Library")));
-        comicCover->setPixmap(QPixmap(":/Images/magazine_256.png"));
+        comicsTitle->setText(QString(tr("Local Library")));
+        comicsCover->setPixmap(QPixmap(":/Images/magazine_256.png"));
         comicsSummary->setText(libraryPath);
-        comicSource->setEnabled(false);
+        comicsSource->setEnabled(false);
         QFileInfo fi(libraryPath);
         comicLastUpdated->setText(fi.lastModified().toLocalTime().toString());
-        comicTotalIssues->setText(QString("%1").arg(libraryData->rowCount()));
-        comicDisableUpdates->setEnabled(false);
-        comicDisableUpdates->setChecked(false);
+        comicsTotalIssues->setText(QString("%1").arg(libraryData->rowCount()));
+        comicsDisableUpdates->setEnabled(false);
+        comicsDisableUpdates->setChecked(false);
     }
 }
 
 void LocalLibrary::on_libraryView_activated(const QModelIndex &index) {
-    QVariant item = libraryData->data( index);
+    QVariant item = libraryData->data( filterLibrary->mapToSource(index));
     qDebug() << "read" << item;
 }
 
@@ -168,22 +156,23 @@ void LocalLibrary::libraryView_selectionChanged(const QModelIndex &selected, con
     updateComicDescription(selected);
 }
 
-void LocalLibrary::on_quickTabs_currentChanged(int index) {
-    uint row = quickTabs->tabData(index).toUInt();
-    libraryView->scrollTo(libraryData->index(row,0));
-    libraryView->setCurrentIndex(libraryData->index(row,0));
-}
 
-void LocalLibrary::on_comicDisableUpdates_toggled(bool checked) {
-    QString infoFile = QString("%1/%2/info.ini").arg(libraryPath)
-            .arg(libraryData->data(libraryView->currentIndex()).toString());
+void LocalLibrary::on_comicsDisableUpdates_toggled(bool checked) {
+    QString infoFile = QString("%1/%2/%3").arg(libraryPath)
+            .arg(libraryData->data(filterLibrary->mapToSource(libraryView->currentIndex())).toString())
+            .arg(descriptionFileName);
     QSettings comicInfo(infoFile, QSettings::IniFormat);
     comicInfo.setValue(cSettingsKey_updatable, checked);
 }
 
-void LocalLibrary::on_comicSource_currentIndexChanged(const QString &text) {
-    QString infoFile = QString("%1/%2/info.ini").arg(libraryPath)
-            .arg(libraryData->data(libraryView->currentIndex()).toString());
+void LocalLibrary::on_comicsSource_currentIndexChanged(const QString &text) {
+    QString infoFile = QString("%1/%2/%3").arg(libraryPath)
+            .arg(libraryData->data(filterLibrary->mapToSource(libraryView->currentIndex())).toString())
+            .arg(descriptionFileName);
     QSettings comicInfo(infoFile, QSettings::IniFormat);
     comicInfo.setValue(cSettingsKey_source, text);
+}
+
+void LocalLibrary::on_seriesFilter_textChanged(const QString &text) {
+    filterLibrary->setFilterWildcard(text);
 }
