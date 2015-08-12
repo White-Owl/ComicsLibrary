@@ -3,6 +3,12 @@
 
 ExternalLibrary::ExternalLibrary(QWidget *parent) : QWidget(parent) {
     setupUi(this);
+
+    titles = new QStandardItemModel(this);
+    filterModel = new QSortFilterProxyModel(this);
+    filterModel->setSourceModel(titles);
+    filterModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    listComics->setModel(filterModel);
 }
 
 void ExternalLibrary::changeEvent(QEvent *e) {
@@ -43,11 +49,11 @@ void ExternalLibrary::setSource(ComicsSource *source) {
             source->comicsData[comics.title] = comics;
         }
         cashedList.close();
-        qDebug() << source->comicsData.keys();
+        //qDebug() << source->comicsData.keys();
         finishedListOfTitles("");
     } else {
         connect(source, SIGNAL(readyListOfTitles(QString)), this, SLOT(finishedListOfTitles(QString)));
-    //    source->requestListOfTitles();
+        source->requestListOfTitles();
     }
     qDebug() << cashedList.fileName();
 }
@@ -75,14 +81,21 @@ void ExternalLibrary::finishedListOfTitles(QString error){
 
 
 
-    /*QHashIterator<QString, Comics> itr(source->comicsData);
+    QHashIterator<QString, Comics> itr(source->comicsData);
     while (itr.hasNext()) {
         itr.next();
-        cashedList << itr.key() << '\t' << itr.value().url << endl;
-    }*/
+        QStandardItem *item = new QStandardItem();
+        item->setText(itr.value().title);
+        titles->appendRow(item);
+    }
 
 
     this->setEnabled(true);
+    filterModel->sort(0);
     mainWindow->showMessage("Ok", 500);
+}
 
+void ExternalLibrary::on_seriesFilter_textChanged(const QString &text) {
+    filterModel->setFilterWildcard(text);
+    filterModel->sort(0);
 }
