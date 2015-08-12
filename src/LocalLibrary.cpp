@@ -71,6 +71,7 @@ bool LocalLibrary::chooseLibraryRoot() {
 bool LocalLibrary::readLibrary() {
     libraryData->clear();
     if(libraryPath.isEmpty() && !chooseLibraryRoot()) return false;
+    mainWindow->startAction(tr("Reading local library"));
     QDir libraryDir(libraryPath);
     foreach(QString folderName, libraryDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
         QStandardItem *item = new QStandardItem();
@@ -89,7 +90,7 @@ bool LocalLibrary::readLibrary() {
         }
         libraryData->appendRow(item);
     }
-    updateComicDescription(QModelIndex());
+    mainWindow->setProgress(1,1);
     return true;
 }
 

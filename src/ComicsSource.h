@@ -2,6 +2,7 @@
 #define COMICSOURCE_H
 
 #include <QtCore>
+#include <QtNetwork>
 
 struct Comics {
     // Title for the comics
@@ -54,12 +55,25 @@ public:
     // Request the specified page from a particular comics/issue
     virtual void requestPage(const QString title, const QString issue, uint pageIndex) = 0;
 
+protected slots:
+    virtual void decryptListOfTitles() = 0;
+    virtual void decryptComicInfo() = 0;
+    virtual void decryptListOfIssues() = 0;
+    virtual void decryptPageCount() = 0;
+    virtual void decryptPage() = 0;
+
+    void downloadProgress1stStep(qint64 bytesReceived, qint64 bytesTotal) {
+        emit downloadProgress(bytesReceived, bytesTotal);
+    }
+
+
 signals:
     void readyListOfTitles(const QString error);
     void readyComicsInfo(const QString title, const QString error);
     void readyListOfIssues(const QString title, const QString error);
     void readyPageCount(const QString title, const QString issue, const QString error);
     void readyPage(const QString title, const QString issue, uint pageIndex, QByteArray data, const QString error);
+    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 };
 
 #endif // COMICSOURCE_H

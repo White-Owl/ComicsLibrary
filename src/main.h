@@ -32,5 +32,7 @@ EXTERN LocalLibrary *localLibraryWindow;
 EXTERN ExternalLibrary *externalLibraryWindow;
 
 
+QString decodeHTML(const QString &encoded);
+
 #endif // MAIN_H
 

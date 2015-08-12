@@ -21,12 +21,11 @@ public:
     void requestPage(const QString title, const QString issue, uint pageIndex);
 
 private slots:
-    void networkError(QNetworkReply::NetworkError errorCode);
-    void finishedListOfTitles();
-/*    void readyComicsInfo(const QString title, const QString error);
-    void readyListOfIssues(const QString title, const QString error);
-    void readyPageCount(const QString title, const QString issue, const QString error);
-    void readyPage(const QString title, const QString issue, uint pageIndex, QByteArray data, const QString error);*/
+    void decryptListOfTitles();
+    void decryptComicInfo();
+    void decryptListOfIssues();
+    void decryptPageCount();
+    void decryptPage();
 };
 
 #endif // MANGAHERE_H

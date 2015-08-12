@@ -16,6 +16,8 @@ class ExternalLibrary : public QWidget, private Ui::ExternalLibrary {
 public:
     explicit ExternalLibrary(QWidget *parent = 0);
     void setSource(ComicsSource *source);
+    void readTitlesFromCache();
+    void writeTitlesToCache();
 
 protected:
     void changeEvent(QEvent *e);
@@ -23,8 +25,10 @@ protected:
 
 protected slots:
     void finishedListOfTitles(QString error);
+    void downloadProgress(qint64 done, qint64 total);
 private slots:
     void on_seriesFilter_textChanged(const QString &text);
+    void on_requestCatalogRefresh_clicked();
 };
 
 #endif // EXTERNALLIBRARY_H

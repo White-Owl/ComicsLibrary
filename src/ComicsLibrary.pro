@@ -16,7 +16,8 @@ SOURCES += main.cpp\
 		MainWindow.cpp \
 	LocalLibrary.cpp \
 	MangaHere.cpp \
-    ExternalLibrary.cpp
+    ExternalLibrary.cpp \
+    Utils.cpp
 
 HEADERS  += MainWindow.h \
 	main.h \
