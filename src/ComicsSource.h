@@ -32,6 +32,7 @@ public:
     // This would be used to show in the Source in GUI
     QString sourceName;
 
+
     // This will hold the information about comicses available at the source.
     // Warning! Do not fill the storage in one run. Fill it up on a per-need basis.
     QHash<QString, Comics> comicsData;

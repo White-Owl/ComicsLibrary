@@ -27,10 +27,11 @@ EXTERN QSettings *settings;
 #include "MainWindow.h"
 #include "LocalLibrary.h"
 #include "ExternalLibrary.h"
+#include "ProgressWindow.h"
 EXTERN MainWindow *mainWindow;
 EXTERN LocalLibrary *localLibraryWindow;
 EXTERN ExternalLibrary *externalLibraryWindow;
-
+EXTERN ProgressWindow *progressWindow;
 
 QString decodeHTML(const QString &encoded);
 

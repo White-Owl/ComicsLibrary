@@ -13,6 +13,10 @@ class ExternalLibrary : public QWidget, private Ui::ExternalLibrary {
     QSortFilterProxyModel *filterModel;
     QStandardItemModel *titles;
 
+    QNetworkAccessManager manager;
+    QNetworkReply *reply;
+
+
 public:
     explicit ExternalLibrary(QWidget *parent = 0);
     void setSource(ComicsSource *source);

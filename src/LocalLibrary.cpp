@@ -71,9 +71,11 @@ bool LocalLibrary::chooseLibraryRoot() {
 bool LocalLibrary::readLibrary() {
     libraryData->clear();
     if(libraryPath.isEmpty() && !chooseLibraryRoot()) return false;
-    mainWindow->startAction(tr("Reading local library"));
+
+    progressWindow->setCaption(tr("Reading local library"));
     QDir libraryDir(libraryPath);
-    foreach(QString folderName, libraryDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+    QStringList folders = libraryDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach(QString folderName, folders) {
         QStandardItem *item = new QStandardItem();
         item->setText(folderName);
         QDir folder(QString("%1/%2").arg(libraryPath).arg(folderName));
@@ -89,8 +91,9 @@ bool LocalLibrary::readLibrary() {
             item->setIcon(defaultComicIcon);
         }
         libraryData->appendRow(item);
+        progressWindow->setProgress(libraryData->rowCount(), folders.count());
     }
-    mainWindow->setProgress(1,1);
+    progressWindow->setProgress(0);
     return true;
 }
 

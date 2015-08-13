@@ -10,14 +10,9 @@ class MainWindow : public QMainWindow, private Ui::MainWindow {
     Q_OBJECT
     void openSubWindow(QWidget *window);
     void openExternalSource(ComicsSource *cs);
-    QLabel *activeProcess, *eta, *totalJobsInQueue;
-    QProgressBar *progressBar;
-    quint64 actionStarted;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    void startAction(QString text);
-    void setProgress(quint64 done, quint64 total);
 
 protected:
     void changeEvent(QEvent *e);

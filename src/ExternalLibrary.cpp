@@ -6,7 +6,7 @@ ExternalLibrary::ExternalLibrary(QWidget *parent) : QWidget(parent) {
 
     titles = new QStandardItemModel(this);
     filterModel = new QSortFilterProxyModel(this);
-    filterModel->setSourceModel(titles);
+//    filterModel->setSourceModel(titles);
     filterModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     listComics->setModel(filterModel);
 }
@@ -36,8 +36,8 @@ void ExternalLibrary::setSource(ComicsSource *source) {
     cashedListName = QString("%1/%2.dat").arg(fi.path()).arg(source->sourceName);
     QFile cashedListFile(cashedListName);
     if(cashedListFile.exists()) {
-        mainWindow->startAction(QString(tr("Reading cashed list of titles for %1"))
-                                .arg(source->sourceName));
+        progressWindow->setCaption(QString(tr("Reading cashed list of titles for %1"))
+                                   .arg(source->sourceName));
         QFileInfo fi(cashedListFile);
         quint64 fileSize = fi.size();
         cashedListFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -47,11 +47,11 @@ void ExternalLibrary::setSource(ComicsSource *source) {
             comics.title = line[0];
             comics.url = line[1];
             source->comicsData[comics.title] = comics;
-            mainWindow->setProgress(cashedListFile.pos(), fileSize);
+            progressWindow->setProgress(cashedListFile.pos(), fileSize);
         }
         cashedListFile.close();
         //qDebug() << source->comicsData.keys();
-        mainWindow->setProgress(fileSize, fileSize);
+        progressWindow->setProgress(fileSize, fileSize);
         finishedListOfTitles("");
     } else {
         on_requestCatalogRefresh_clicked();
@@ -60,12 +60,12 @@ void ExternalLibrary::setSource(ComicsSource *source) {
 }
 
 void ExternalLibrary::downloadProgress(qint64 done, qint64 total) {
-    mainWindow->setProgress(done, total);
+    progressWindow->setProgress(done, total);
 }
 
 void ExternalLibrary::on_requestCatalogRefresh_clicked() {
-    mainWindow->startAction(QString(tr("Reading list of titles for %1"))
-                            .arg(source->sourceName));
+    progressWindow->setCaption(QString(tr("Reading list of titles for %1"))
+                               .arg(source->sourceName));
     connect(source, SIGNAL(readyListOfTitles(QString)), this, SLOT(finishedListOfTitles(QString)));
     connect(source, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
     QFile cashedListFile(cashedListName);
@@ -75,14 +75,14 @@ void ExternalLibrary::on_requestCatalogRefresh_clicked() {
 
 void ExternalLibrary::finishedListOfTitles(QString error){
     if(!error.isEmpty()) {
-        mainWindow->statusBar()->showMessage(error);
+        qDebug() << "finishedListOfTitles error:" << error;
         return;
     }
 
     QFileInfo cashedListFI(cashedListName);
     if(!cashedListFI.exists()) {
-        mainWindow->startAction(QString(tr("Saving list of titles for %1"))
-                                .arg(source->sourceName));
+        progressWindow->setCaption(QString(tr("Saving list of titles for %1"))
+                                   .arg(source->sourceName));
         quint64 totalTitles = source->comicsData.keys().count();
         quint64 titlesCached = 0;
         QFile cashedListFile(cashedListName);
@@ -94,31 +94,35 @@ void ExternalLibrary::finishedListOfTitles(QString error){
             cashedList << itr.key() << '\t' << itr.value().url << endl;
             titlesCached++;
             if(titlesCached%100 == 0) {
-                mainWindow->setProgress(titlesCached, totalTitles);
+                progressWindow->setProgress(titlesCached, totalTitles);
             }
         }
         cashedList.flush();
         catalogRefreshedAt->setText(QDateTime::currentDateTime().toLocalTime().toString());
         cashedListFile.close();
-        mainWindow->setProgress(1,1);
     } else {
         catalogRefreshedAt->setText(cashedListFI.created().toLocalTime().toString());
     }
 
-
+    progressWindow->setCaption(tr("Refreshing"));
+    filterModel->setSourceModel(NULL);
     titles->clear();
+    quint64 titlesCount = source->comicsData.keys().count();
     QHashIterator<QString, Comics> itr(source->comicsData);
     while (itr.hasNext()) {
         itr.next();
         QStandardItem *item = new QStandardItem();
         item->setText(itr.value().title);
         titles->appendRow(item);
+        if(titles->rowCount() % 1000 == 0) {
+            progressWindow->setProgress(titles->rowCount(), titlesCount);
+        }
     }
-
+    progressWindow->hide();
+    filterModel->setSourceModel(titles);
 
     this->setEnabled(true);
     filterModel->sort(0);
-    mainWindow->setProgress(1,1);
 }
 
 void ExternalLibrary::on_seriesFilter_textChanged(const QString &text) {

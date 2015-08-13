@@ -15,21 +15,28 @@ QMAKE_CXXFLAGS += -Werror
 SOURCES += main.cpp\
 		MainWindow.cpp \
 	LocalLibrary.cpp \
-	MangaHere.cpp \
-    ExternalLibrary.cpp \
-    Utils.cpp
+	ExternalLibrary.cpp \
+	Utils.cpp \
+	ProgressWindow.cpp \
+	ExternalSources/Batoto.cpp \
+	ExternalSources/MangaHere.cpp
 
 HEADERS  += MainWindow.h \
 	main.h \
 	LocalLibrary.h \
-	MangaHere.h \
-    ExternalLibrary.h \
-    ComicsSource.h
+	ExternalLibrary.h \
+	ComicsSource.h \
+	ProgressWindow.h \
+	ExternalSources/Batoto.h \
+	ExternalSources/MangaHere.h
 
 FORMS    += MainWindow.ui \
 	LocalLibrary.ui \
-    ExternalLibrary.ui
+	ExternalLibrary.ui \
+	ProgressWindow.ui
 
 RESOURCES += \
 	resorces.qrc
+
+#include( ExternalSources.pri )
 
