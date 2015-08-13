@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "main.h"
 #include "MangaHere.h"
+#include "Batoto.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
@@ -69,4 +70,8 @@ void MainWindow::openExternalSource(ComicsSource *cs) {
 
 void MainWindow::on_actionMangaHere_triggered() {
     openExternalSource(new MangaHere);
+}
+
+void MainWindow::on_actionBatoto_triggered() {
+    openExternalSource(new Batoto);
 }

@@ -2,8 +2,6 @@
 #define MANGAHERE_H
 
 #include "ComicsSource.h"
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
 
 class MangaHere : public ComicsSource {
     QString baseURL;

@@ -1,6 +1,7 @@
 #ifndef BATOTO_H
 #define BATOTO_H
 
+#include "ComicsSource.h"
 
 class Batoto : public ComicsSource {
     QString baseURL;

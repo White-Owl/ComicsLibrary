@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ComicsLibrary
 TEMPLATE = app
 QMAKE_CXXFLAGS += -Werror
+INCLUDEPATH += ExternalSources
 
 SOURCES += main.cpp\
 		MainWindow.cpp \
@@ -37,6 +38,3 @@ FORMS    += MainWindow.ui \
 
 RESOURCES += \
 	resorces.qrc
-
-#include( ExternalSources.pri )
-

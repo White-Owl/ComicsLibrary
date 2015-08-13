@@ -20,6 +20,7 @@ protected:
 private slots:
     void on_actionChoose_Library_triggered();
     void on_actionMangaHere_triggered();
+    void on_actionBatoto_triggered();
 };
 
 #endif // MAINWINDOW_H
