@@ -33,6 +33,8 @@ EXTERN LocalLibrary *localLibraryWindow;
 EXTERN ExternalLibrary *externalLibraryWindow;
 EXTERN ProgressWindow *progressWindow;
 
+EXTERN QHash<QString, ComicsSource*> comicsSources;
+
 QString decodeHTML(const QString &encoded);
 
 #endif // MAIN_H

@@ -18,18 +18,14 @@ SOURCES += main.cpp\
 	LocalLibrary.cpp \
 	ExternalLibrary.cpp \
 	Utils.cpp \
-	ProgressWindow.cpp \
-	ExternalSources/Batoto.cpp \
-	ExternalSources/MangaHere.cpp
+	ProgressWindow.cpp
 
 HEADERS  += MainWindow.h \
 	main.h \
 	LocalLibrary.h \
 	ExternalLibrary.h \
 	ComicsSource.h \
-	ProgressWindow.h \
-	ExternalSources/Batoto.h \
-	ExternalSources/MangaHere.h
+	ProgressWindow.h
 
 FORMS    += MainWindow.ui \
 	LocalLibrary.ui \
@@ -38,3 +34,5 @@ FORMS    += MainWindow.ui \
 
 RESOURCES += \
 	resorces.qrc
+
+include(ExternalSources/ExternalSources.pri)

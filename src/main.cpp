@@ -2,6 +2,9 @@
 #include "main.h"
 #include "MainWindow.h"
 
+#include "MangaHere.h"
+#include "Batoto.h"
+
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
@@ -12,5 +15,9 @@ int main(int argc, char *argv[]) {
     if(! localLibraryWindow->readLibrary()) {
         return 1;
     }
+
+    comicsSources["MangaHere"] = new MangaHere();
+    comicsSources["Batoto"] = new Batoto();
+
     return a.exec();
 }

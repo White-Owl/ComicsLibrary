@@ -69,9 +69,9 @@ void MainWindow::openExternalSource(ComicsSource *cs) {
 }
 
 void MainWindow::on_actionMangaHere_triggered() {
-    openExternalSource(new MangaHere);
+    openExternalSource(comicsSources["MangaHere"]);
 }
 
 void MainWindow::on_actionBatoto_triggered() {
-    openExternalSource(new Batoto);
+    openExternalSource(comicsSources["Batoto"]);
 }
