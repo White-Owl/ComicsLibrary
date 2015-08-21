@@ -43,6 +43,8 @@ void ExternalLibrary::setSource(ComicsSource *source) {
         cashedListFile.open(QIODevice::ReadOnly | QIODevice::Text);
         while(!cashedListFile.atEnd()) {
             QList<QByteArray> line = cashedListFile.readLine().split('\t');
+            if(line.size()<2) continue; // should not happen, but if someone "edited" the file...
+
             Comics comics;
             comics.title = line[0];
             comics.url = line[1];
@@ -76,6 +78,9 @@ void ExternalLibrary::on_requestCatalogRefresh_clicked() {
 void ExternalLibrary::finishedListOfTitles(QString error){
     if(!error.isEmpty()) {
         qDebug() << "finishedListOfTitles error:" << error;
+        this->setEnabled(true);
+        progressWindow->hide();
+        QMessageBox::warning(this, tr("Failed to read list of titles"), error);
         return;
     }
 
@@ -84,6 +89,7 @@ void ExternalLibrary::finishedListOfTitles(QString error){
         progressWindow->setCaption(QString(tr("Saving list of titles for %1"))
                                    .arg(source->sourceName));
         quint64 totalTitles = source->comicsData.keys().count();
+        qDebug() << "saving" << totalTitles << "titles into" << cashedListName;
         quint64 titlesCached = 0;
         QFile cashedListFile(cashedListName);
         cashedListFile.open(QIODevice::WriteOnly);
@@ -93,13 +99,15 @@ void ExternalLibrary::finishedListOfTitles(QString error){
             itr.next();
             cashedList << itr.key() << '\t' << itr.value().url << endl;
             titlesCached++;
-            if(titlesCached%100 == 0) {
+            if(titlesCached%1000 == 0) {
                 progressWindow->setProgress(titlesCached, totalTitles);
+                qDebug() << "saved" << titlesCached<< "of" << totalTitles;
             }
         }
         cashedList.flush();
         catalogRefreshedAt->setText(QDateTime::currentDateTime().toLocalTime().toString());
         cashedListFile.close();
+        qDebug() << "Saving done";
     } else {
         catalogRefreshedAt->setText(cashedListFI.created().toLocalTime().toString());
     }

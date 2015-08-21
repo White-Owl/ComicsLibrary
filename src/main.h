@@ -11,7 +11,7 @@
 #include <QtGui>
 #include <QMdiSubWindow>
 #include <QFileDialog>
-
+#include <QMessageBox>
 
 EXTERN QSettings *settings;
 #define settingsKey_iconSize       "iconSize"

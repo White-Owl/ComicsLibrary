@@ -3,44 +3,86 @@
 
 Batoto::Batoto() {
     sourceName = "Batoto";
-    baseURL = "http://www.bato.to";
+    baseURL = "http://bato.to";
+    titlesPerPage = 10;
 }
 
 Batoto::~Batoto() {}
 
 void Batoto::requestListOfTitles() {
     comicsData.clear();
-    reply = manager.get(QNetworkRequest(QUrl(QString("%1/mangalist/").arg(baseURL))));
+    reply = manager.get(QNetworkRequest(QUrl(QString("%1/comic/_/comics/?per_page=%2&st=0").arg(baseURL).arg(titlesPerPage))));
     connect(reply, SIGNAL(finished()), this, SLOT(decryptListOfTitles()));
-    connect(reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress1stStep(qint64,qint64)));
 }
 
+
 void Batoto::decryptListOfTitles() {
+    qDebug() << reply->request().url();
     reply->deleteLater();
     if(reply->error() != QNetworkReply::NoError) {
         emit readyListOfTitles(reply->errorString());
         return;
     }
 
-    // Example Entry: <li><a class="manga_info" rel="&quot;Gokko&quot;" href="http://www.Batoto.com/manga/gokko/"><span></span>&quot;Gokko&quot;</a></li>
-    QRegExp re("<li><a class=\"manga_info\" rel=\"[^\"]*\" href=\"([^\"]*)\"><span></span>([^\"]*)</a></li>");
     QByteArray contents = reply->readAll();
-    progressWindow->setCaption(tr("Decypher list of titles"));
+    qDebug() << "bytes in the reply" << contents.size();
+    QFile tmp("./contents.tmp");
+    tmp.open(QIODevice::WriteOnly);
+    tmp.write(contents);
+    tmp.close();
+
     int pos = 0;
-    int comicsCount = 0;
-    while ((pos = re.indexIn(contents, pos)) != -1) {
-        Comics comics;
-        comics.title = decodeHTML( re.cap(2) );
-        comics.url = re.cap(1);
-        comicsData[comics.title] = comics;
-        pos += re.matchedLength();
-        if(comicsCount % 500 == 0) {
-            progressWindow->setProgress(pos, contents.length());
-        }
-        comicsCount++;
+    // searching for number of pages
+    QRegExp rePages("<a href=[\"\']#[\"\']>Page (\\d+) of (\\d+) <");
+    if((pos=rePages.indexIn(contents)) == -1) {
+        qDebug() << "page counter not found";
+        emit readyListOfTitles(tr("Failed to read number of pages"));
+        return;
     }
-    progressWindow->hide();
-    emit readyListOfTitles("");
+    uint currentPageInTheListOfTitles = rePages.cap(1).toUInt();
+    uint totalPagesInTheListOfTitles = rePages.cap(2).toUInt();
+    if(currentPageInTheListOfTitles == 1 ) {
+        progressWindow->setCaption(tr("Decypher list of titles"));
+    }
+    progressWindow->setProgress(currentPageInTheListOfTitles-1, totalPagesInTheListOfTitles);
+
+
+
+    // Example Entry:
+    // Start of record: <tr class="__topic ">
+    // then several lines of formatting and finaly the title:
+    // <a href="http://bato.to/comic/_/comics/choko-beast-r11065">Choko Beast!!</a>
+    QRegExp reRecord("<tr class=[\"\']__topic *[\"\']>");
+    QRegExp reTitle("<a href=[\"'](.+)[\"']>(.+)</a>");
+    while ((pos = reRecord.indexIn(contents, pos)) != -1) {
+        Comics comics;
+
+        pos += reRecord.matchedLength();
+        pos = reTitle.indexIn(contents, pos);
+        if(pos == -1) break; // it should not happen, but just in case
+        qDebug() << reTitle.cap(1);
+        qDebug() << reTitle.cap(2);
+
+        comics.title = reTitle.cap(2);
+        comics.url = reTitle.cap(1);
+        comicsData[comics.title] = comics;
+        pos += reTitle.matchedLength();
+    }
+
+
+    if(currentPageInTheListOfTitles < totalPagesInTheListOfTitles) {
+        progressWindow->hide();
+        emit readyListOfTitles("");
+/*        reply = manager.get(QNetworkRequest(QUrl(QString("%1/comic/_/comics/?per_page=%2&st=%3")
+                                                 .arg(baseURL)
+                                                 .arg(titlesPerPage)
+                                                 .arg(currentPageInTheListOfTitles*titlesPerPage)
+                                                 )));
+        connect(reply, SIGNAL(finished()), this, SLOT(decryptListOfTitles()));*/
+    } else {
+        progressWindow->hide();
+        emit readyListOfTitles("");
+    }
 }
 
 
@@ -77,4 +119,3 @@ void Batoto::requestPage(const QString title, const QString issue, uint pageInde
 void Batoto::decryptPage() {
     emit readyPage("", "", 0, QByteArray(), "");
 }
-

@@ -7,6 +7,7 @@ class Batoto : public ComicsSource {
     QString baseURL;
     QNetworkAccessManager manager;
     QNetworkReply *reply;
+    uint titlesPerPage;
 
 public:
     Batoto();
