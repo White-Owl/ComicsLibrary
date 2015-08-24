@@ -75,3 +75,8 @@ void MainWindow::on_actionMangaHere_triggered() {
 void MainWindow::on_actionBatoto_triggered() {
     openExternalSource(comicsSources["Batoto"]);
 }
+
+void MainWindow::on_actionMangaJoy_triggered() {
+    openExternalSource(comicsSources["MangaJoy"]);
+
+}

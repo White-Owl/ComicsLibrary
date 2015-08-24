@@ -70,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>773</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuLibrary">
@@ -83,6 +83,7 @@
      </property>
      <addaction name="actionBatoto"/>
      <addaction name="actionMangaHere"/>
+     <addaction name="actionMangaJoy"/>
     </widget>
     <addaction name="actionChoose_Library"/>
     <addaction name="menuOpen_External_Source"/>
@@ -234,6 +235,7 @@
    </attribute>
    <addaction name="actionBatoto"/>
    <addaction name="actionMangaHere"/>
+   <addaction name="actionMangaJoy"/>
   </widget>
   <action name="actionQuit">
    <property name="text">
@@ -338,6 +340,18 @@
    </property>
    <property name="text">
     <string>General Tools</string>
+   </property>
+  </action>
+  <action name="actionMangaJoy">
+   <property name="icon">
+    <iconset resource="resorces.qrc">
+     <normaloff>:/Images/logo-mangajoy.png</normaloff>:/Images/logo-mangajoy.png</iconset>
+   </property>
+   <property name="text">
+    <string>MangaJoy</string>
+   </property>
+   <property name="toolTip">
+    <string>manga-joy.com</string>
    </property>
   </action>
  </widget>

@@ -9,7 +9,7 @@
 class ExternalLibrary : public QWidget, private Ui::ExternalLibrary {
     Q_OBJECT
     ComicsSource *source;
-    QString cashedListName;
+    QString cachedListName;
     QSortFilterProxyModel *filterModel;
     QStandardItemModel *titles;
 

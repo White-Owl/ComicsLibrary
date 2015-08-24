@@ -24,6 +24,8 @@ LocalLibrary::LocalLibrary(QWidget *parent) : QWidget(parent) {
         QString iconName = QString(":Images/magazine_%1.png").arg(iconSizes[i]);
         defaultComicIcon.addFile(iconName);
     }
+
+    comicsSource->addItems(comicsSources.keys());
 }
 
 void LocalLibrary::changeEvent(QEvent *e) {

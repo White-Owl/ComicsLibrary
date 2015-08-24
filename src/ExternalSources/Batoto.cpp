@@ -4,7 +4,7 @@
 Batoto::Batoto() {
     sourceName = "Batoto";
     baseURL = "http://bato.to";
-    titlesPerPage = 1000;
+    titlesPerPage = 500;
 }
 
 Batoto::~Batoto() {}
@@ -17,7 +17,7 @@ void Batoto::requestListOfTitles() {
 
 
 void Batoto::decryptListOfTitles() {
-    qDebug() << reply->request().url();
+    //qDebug() << reply->request().url();
     reply->deleteLater();
     if(reply->error() != QNetworkReply::NoError) {
         emit readyListOfTitles(reply->errorString());
@@ -25,18 +25,12 @@ void Batoto::decryptListOfTitles() {
     }
 
     QByteArray contents = reply->readAll();
-    qDebug() << "bytes in the reply" << contents.size();
-    QFile tmp("./contents.tmp");
-    tmp.open(QIODevice::WriteOnly);
-    tmp.write(contents);
-    tmp.close();
 
     int pos = 0;
-    // searching for number of pages
-    // <a href='#'>Page 1 of 15 <!.....
+    /// searching for number of pages
+    /// <a href='#'>Page 1 of 15 <!.....
     QRegExp rePages("<a href=[\"\']#[\"\']>Page (\\d+) of (\\d+) <");
     if((pos=rePages.indexIn(contents)) == -1) {
-        qDebug() << "page counter not found";
         emit readyListOfTitles(tr("Failed to read number of pages"));
         return;
     }
@@ -49,27 +43,24 @@ void Batoto::decryptListOfTitles() {
 
 
 
-    // Example Entry:
-    // Start of record: <tr class="__topic ">
-    // then several lines of formatting and finaly the title:
-    // <a href="http://bato.to/comic/_/comics/choko-beast-r11065">Choko Beast!!</a>
-    QRegExp reRecord("<tr class=[\"\']__topic *[\"\']>");
-    QRegExp reUrl("<a href=[\"']([^\"']+)[\"']>");
-    QRegExp reCloseA("</a>");
-    while ((pos = reRecord.indexIn(contents, pos)) != -1) {
+    /// Example Entry:
+    /// Start of record: <tr class="__topic ">
+    /// then several lines of formatting and finaly the title:
+    /// <a href="http://bato.to/comic/_/comics/choko-beast-r11065">Choko Beast!!</a>
+    QRegExp reRecordStart("<tr class=[\"\']__topic *[\"\']>");
+    QRegExp reTitle("<a href=[\"']([^\"']+)[\"']>([^<]+)</a>");
+    while ((pos = reRecordStart.indexIn(contents, pos)) != -1) {
         Comics comics;
 
-        pos += reRecord.matchedLength();
-        pos = reUrl.indexIn(contents, pos);
+        pos += reRecordStart.matchedLength();
+        pos = reTitle.indexIn(contents, pos);
         if(pos == -1) break; // it should not happen, but just in case
-        pos += reUrl.matchedLength();
+        pos += reTitle.matchedLength();
 
-        int pos2 = reCloseA.indexIn(contents, pos);
-        comics.title = decodeHTML( contents.mid(pos, pos2-pos) );
-        comics.url = reUrl.cap(1);
+        comics.title = decodeHTML(reTitle.cap(2));
+        comics.url = reTitle.cap(1);
         comicsData[comics.title] = comics;
         //qDebug() << "Title:" << comics.title << "Url:" << comics.url;
-        pos = pos2;
     }
 
 

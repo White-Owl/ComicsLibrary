@@ -36,3 +36,4 @@ RESOURCES += \
 	resorces.qrc
 
 include(ExternalSources/ExternalSources.pri)
+
