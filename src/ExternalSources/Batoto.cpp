@@ -4,7 +4,7 @@
 Batoto::Batoto() {
     sourceName = "Batoto";
     baseURL = "http://bato.to";
-    titlesPerPage = 10;
+    titlesPerPage = 1000;
 }
 
 Batoto::~Batoto() {}
@@ -33,6 +33,7 @@ void Batoto::decryptListOfTitles() {
 
     int pos = 0;
     // searching for number of pages
+    // <a href='#'>Page 1 of 15 <!.....
     QRegExp rePages("<a href=[\"\']#[\"\']>Page (\\d+) of (\\d+) <");
     if((pos=rePages.indexIn(contents)) == -1) {
         qDebug() << "page counter not found";
@@ -53,32 +54,32 @@ void Batoto::decryptListOfTitles() {
     // then several lines of formatting and finaly the title:
     // <a href="http://bato.to/comic/_/comics/choko-beast-r11065">Choko Beast!!</a>
     QRegExp reRecord("<tr class=[\"\']__topic *[\"\']>");
-    QRegExp reTitle("<a href=[\"'](.+)[\"']>(.+)</a>");
+    QRegExp reUrl("<a href=[\"']([^\"']+)[\"']>");
+    QRegExp reCloseA("</a>");
     while ((pos = reRecord.indexIn(contents, pos)) != -1) {
         Comics comics;
 
         pos += reRecord.matchedLength();
-        pos = reTitle.indexIn(contents, pos);
+        pos = reUrl.indexIn(contents, pos);
         if(pos == -1) break; // it should not happen, but just in case
-        qDebug() << reTitle.cap(1);
-        qDebug() << reTitle.cap(2);
+        pos += reUrl.matchedLength();
 
-        comics.title = reTitle.cap(2);
-        comics.url = reTitle.cap(1);
+        int pos2 = reCloseA.indexIn(contents, pos);
+        comics.title = decodeHTML( contents.mid(pos, pos2-pos) );
+        comics.url = reUrl.cap(1);
         comicsData[comics.title] = comics;
-        pos += reTitle.matchedLength();
+        //qDebug() << "Title:" << comics.title << "Url:" << comics.url;
+        pos = pos2;
     }
 
 
     if(currentPageInTheListOfTitles < totalPagesInTheListOfTitles) {
-        progressWindow->hide();
-        emit readyListOfTitles("");
-/*        reply = manager.get(QNetworkRequest(QUrl(QString("%1/comic/_/comics/?per_page=%2&st=%3")
+        reply = manager.get(QNetworkRequest(QUrl(QString("%1/comic/_/comics/?per_page=%2&st=%3")
                                                  .arg(baseURL)
                                                  .arg(titlesPerPage)
                                                  .arg(currentPageInTheListOfTitles*titlesPerPage)
                                                  )));
-        connect(reply, SIGNAL(finished()), this, SLOT(decryptListOfTitles()));*/
+        connect(reply, SIGNAL(finished()), this, SLOT(decryptListOfTitles()));
     } else {
         progressWindow->hide();
         emit readyListOfTitles("");

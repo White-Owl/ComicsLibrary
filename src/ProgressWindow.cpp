@@ -4,7 +4,8 @@
 ProgressWindow::ProgressWindow(QWidget *parent) : QWidget(parent) {
     setupUi(this);
     progressWindow = this;
-    setWindowFlags(Qt::Window| Qt::CustomizeWindowHint);
+    setWindowFlags(Qt::Dialog| Qt::CustomizeWindowHint);
+    //setWindowModality(Qt::WindowModal);
     setFixedSize(size());
 }
 
