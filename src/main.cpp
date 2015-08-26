@@ -16,10 +16,16 @@ int main(int argc, char *argv[]) {
     comicsSources["Batoto"] = new Batoto();
     comicsSources["MangaJoy"] = new MangaJoy();
 
-
-
     mainWindow = new MainWindow();
     mainWindow->show();
+
+    progressWindow->setCaption(QObject::tr("Loading cached lists"));
+    foreach(QString title, comicsSources.keys()) {
+        comicsSources[title]->loadCachedListOfTitles();
+    }
+    progressWindow->hide();
+
+
     if(! localLibraryWindow->readLibrary()) {
         return 1;
     }

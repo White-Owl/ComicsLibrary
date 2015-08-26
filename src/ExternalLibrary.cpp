@@ -33,7 +33,6 @@ void ExternalLibrary::setSource(ComicsSource *source) {
     this->source = source;
     setWindowTitle(source->sourceName);
     this->setEnabled(false);
-
     QStringList cacheDirs = QStandardPaths::standardLocations(QStandardPaths::CacheLocation);
     if(cacheDirs.isEmpty()) cacheDirs << QDir::tempPath();
     QDir cacheDir(cacheDirs[0]);
@@ -42,6 +41,7 @@ void ExternalLibrary::setSource(ComicsSource *source) {
     cachedListName = QString("%1/%2.dat").arg(cacheDirs[0]).arg(source->sourceName);
     QFile cashedListFile(cachedListName);
     if(cashedListFile.exists()) {
+        QTime tt= QTime::currentTime();
         progressWindow->setCaption(QString(tr("Reading cashed list of titles for %1"))
                                    .arg(source->sourceName));
         QFileInfo fi(cashedListFile);
@@ -60,6 +60,7 @@ void ExternalLibrary::setSource(ComicsSource *source) {
         cashedListFile.close();
         //qDebug() << source->comicsData.keys();
         progressWindow->setProgress(fileSize, fileSize);
+        qDebug()<< tt.elapsed();
         finishedListOfTitles("");
     } else {
         on_requestCatalogRefresh_clicked();

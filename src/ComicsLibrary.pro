@@ -18,7 +18,8 @@ SOURCES += main.cpp\
 	LocalLibrary.cpp \
 	ExternalLibrary.cpp \
 	Utils.cpp \
-	ProgressWindow.cpp
+	ProgressWindow.cpp \
+    ComicsSource.cpp
 
 HEADERS  += MainWindow.h \
 	main.h \

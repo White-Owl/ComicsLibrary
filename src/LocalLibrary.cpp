@@ -26,6 +26,7 @@ LocalLibrary::LocalLibrary(QWidget *parent) : QWidget(parent) {
     }
 
     comicsSource->addItems(comicsSources.keys());
+    comicsSourceModel = qobject_cast<QStandardItemModel*>(comicsSource->model());
 }
 
 void LocalLibrary::changeEvent(QEvent *e) {
@@ -123,19 +124,34 @@ void LocalLibrary::updateComicDescription(const QModelIndex &index) {
 
         comicsTotalIssues->setText(QString("%1").arg(chapters.count()));
 
-        comicsSource->setEnabled(true);
 
         QString infoFile = QString("%1/%2/%3").arg(libraryPath).arg(folderName).arg(descriptionFileName);
         QSettings comicsInfo(infoFile, QSettings::IniFormat);
-        qDebug() << comicsInfo.value(cSettingsKey_summary).toString();
         comicsSummary->setText(comicsInfo.value(cSettingsKey_summary).toString());
-        comicsSource->setCurrentIndex(
-                    comicsSource->findText(comicsInfo.value(cSettingsKey_source).toString())
-                    );
+
+
+        bool canUpdate = false;
+        for(int i=0; i<comicsSourceModel->rowCount(); i++) {
+            QStandardItem *item = comicsSourceModel->item(i);
+            ComicsSource *cs = comicsSources[item->text()];
+            if(cs->comicsData.contains(folderName)) {
+                canUpdate = true;
+                item->setEnabled(true);
+            } else {
+                item->setEnabled(false);
+            }
+        }
+        comicsSource->setEnabled(true);
+        if (canUpdate) {
+            comicsSource->setCurrentIndex( comicsSource->findText(comicsInfo.value(cSettingsKey_source).toString()) );
+        } else {
+            comicsSource->setCurrentIndex( -1);
+        }
         if(comicsSource->currentIndex()<0) {
             comicsDisableUpdates->setEnabled(false);
             comicsDisableUpdates->setChecked(true);
         } else {
+            comicsDisableUpdates->setEnabled(true);
             comicsDisableUpdates->setChecked(comicsInfo.value(cSettingsKey_updatable, true).toBool());
         }
 

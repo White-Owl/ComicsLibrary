@@ -12,6 +12,7 @@ class LocalLibrary : public QWidget, private Ui::LocalLibrary {
     QStandardItemModel *libraryData;
     QSortFilterProxyModel *filterLibrary;
     QIcon defaultComicIcon;
+    QStandardItemModel *comicsSourceModel; // used to enable/disable sources
     void updateComicDescription(const QModelIndex &index);
 
 public:

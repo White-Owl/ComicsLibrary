@@ -32,6 +32,8 @@ public:
     // This would be used to show in the Source in GUI
     QString sourceName;
 
+    // Where to store cached list of titles
+    QString cachedTitlesFileName;
 
     // This will hold the information about comicses available at the source.
     // Warning! Do not fill the storage in one run. Fill it up on a per-need basis.
@@ -56,17 +58,15 @@ public:
     // Request the specified page from a particular comics/issue
     virtual void requestPage(const QString title, const QString issue, uint pageIndex) = 0;
 
+    void loadCachedListOfTitles();
+    void saveListOfTitlesToCache();
+
 protected slots:
     virtual void decryptListOfTitles() = 0;
     virtual void decryptComicInfo() = 0;
     virtual void decryptListOfIssues() = 0;
     virtual void decryptPageCount() = 0;
     virtual void decryptPage() = 0;
-
-    void downloadProgress1stStep(qint64 bytesReceived, qint64 bytesTotal) {
-        emit downloadProgress(bytesReceived, bytesTotal);
-    }
-
 
 signals:
     void readyListOfTitles(const QString error);
