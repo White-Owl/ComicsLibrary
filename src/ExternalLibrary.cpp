@@ -32,51 +32,14 @@ void ExternalLibrary::closeEvent(QCloseEvent *e) {
 void ExternalLibrary::setSource(ComicsSource *source) {
     this->source = source;
     setWindowTitle(source->sourceName);
-    this->setEnabled(false);
-    QStringList cacheDirs = QStandardPaths::standardLocations(QStandardPaths::CacheLocation);
-    if(cacheDirs.isEmpty()) cacheDirs << QDir::tempPath();
-    QDir cacheDir(cacheDirs[0]);
-    if(! cacheDir.exists()) cacheDir.mkpath(cacheDirs[0]);
-
-    cachedListName = QString("%1/%2.dat").arg(cacheDirs[0]).arg(source->sourceName);
-    QFile cashedListFile(cachedListName);
-    if(cashedListFile.exists()) {
-        QTime tt= QTime::currentTime();
-        progressWindow->setCaption(QString(tr("Reading cashed list of titles for %1"))
-                                   .arg(source->sourceName));
-        QFileInfo fi(cashedListFile);
-        quint64 fileSize = fi.size();
-        cashedListFile.open(QIODevice::ReadOnly | QIODevice::Text);
-        while(!cashedListFile.atEnd()) {
-            QList<QByteArray> line = cashedListFile.readLine().split('\t');
-            if(line.size()<2) continue; // should not happen, but if someone "edited" the file...
-
-            Comics comics;
-            comics.title = line[0];
-            comics.url = line[1];
-            source->comicsData[comics.title] = comics;
-            progressWindow->setProgress(cashedListFile.pos(), fileSize);
-        }
-        cashedListFile.close();
-        //qDebug() << source->comicsData.keys();
-        progressWindow->setProgress(fileSize, fileSize);
-        qDebug()<< tt.elapsed();
-        finishedListOfTitles("");
-    } else {
-        on_requestCatalogRefresh_clicked();
-    }
-    //qDebug() << cashedListFile.fileName();
+    finishedListOfTitles();
 }
 
-void ExternalLibrary::downloadProgress(qint64 done, qint64 total) {
-    progressWindow->setProgress(done, total);
-}
 
 void ExternalLibrary::on_requestCatalogRefresh_clicked() {
-    progressWindow->setCaption(QString(tr("Reading list of titles for %1"))
+    progressWindow->setCaption(QString(tr("Requesting list of titles for %1"))
                                .arg(source->sourceName));
     connect(source, SIGNAL(readyListOfTitles(QString)), this, SLOT(finishedListOfTitles(QString)));
-    connect(source, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(downloadProgress(qint64,qint64)));
     QFile cashedListFile(cachedListName);
     cashedListFile.remove();
     source->requestListOfTitles();
