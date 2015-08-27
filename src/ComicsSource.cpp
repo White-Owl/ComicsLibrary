@@ -1,11 +1,11 @@
 #include "ComicsSource.h"
 
 void ComicsSource::loadCachedListOfTitles() {
+    QStringList cacheDirs;
 #if QT_VERSION >= 0x050000
-    QStringList cacheDirs = QStandardPaths::standardLocations(QStandardPaths::CacheLocation);
+    cacheDirs << QStandardPaths::standardLocations(QStandardPaths::CacheLocation);
     if(cacheDirs.isEmpty()) cacheDirs << QDir::tempPath();
 #else
-    QStringList cacheDirs;
     cacheDirs << QString("~/.cache/%1").arg(qApp->applicationName());
 #endif
     if(! QFileInfo::exists(cacheDirs[0])) QDir::root().mkpath(cacheDirs[0]);

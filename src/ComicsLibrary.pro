@@ -19,14 +19,16 @@ SOURCES += main.cpp\
 	ExternalLibrary.cpp \
 	Utils.cpp \
 	ProgressWindow.cpp \
-    ComicsSource.cpp
+    ComicsSource.cpp \
+    NetworkJob.cpp
 
 HEADERS  += MainWindow.h \
 	main.h \
 	LocalLibrary.h \
 	ExternalLibrary.h \
 	ComicsSource.h \
-	ProgressWindow.h
+	ProgressWindow.h \
+    NetworkJob.h
 
 FORMS    += MainWindow.ui \
 	LocalLibrary.ui \

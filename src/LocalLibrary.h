@@ -4,6 +4,7 @@
 #include "ui_LocalLibrary.h"
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QFile>
 
 class LocalLibrary : public QWidget, private Ui::LocalLibrary {
     Q_OBJECT
@@ -14,11 +15,15 @@ class LocalLibrary : public QWidget, private Ui::LocalLibrary {
     QIcon defaultComicIcon;
     QStandardItemModel *comicsSourceModel; // used to enable/disable sources
     void updateComicDescription(const QModelIndex &index);
+    QFile infoFileName(const QString &title);
+
 
 public:
     explicit LocalLibrary(QWidget *parent = 0);
     bool chooseLibraryRoot();
     bool readLibrary();
+    void checkForUpdates(const QString &title = QString());
+
 
 protected:
     void changeEvent(QEvent *e);

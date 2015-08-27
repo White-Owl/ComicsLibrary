@@ -22,6 +22,7 @@ private slots:
     void on_actionMangaHere_triggered();
     void on_actionBatoto_triggered();
     void on_actionMangaJoy_triggered();
+    void on_actionCheck_for_new_issues_triggered();
 };
 
 #endif // MAINWINDOW_H

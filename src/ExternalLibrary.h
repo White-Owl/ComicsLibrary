@@ -9,7 +9,6 @@
 class ExternalLibrary : public QWidget, private Ui::ExternalLibrary {
     Q_OBJECT
     ComicsSource *source;
-    QString cachedListName;
     QSortFilterProxyModel *filterModel;
     QStandardItemModel *titles;
 
@@ -29,7 +28,6 @@ protected:
 
 protected slots:
     void finishedListOfTitles(QString error);
-    void downloadProgress(qint64 done, qint64 total);
 private slots:
     void on_seriesFilter_textChanged(const QString &text);
     void on_requestCatalogRefresh_clicked();

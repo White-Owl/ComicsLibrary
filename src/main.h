@@ -28,12 +28,15 @@ EXTERN QSettings *settings;
 #include "LocalLibrary.h"
 #include "ExternalLibrary.h"
 #include "ProgressWindow.h"
+#include "NetworkJob.h"
+
 EXTERN MainWindow *mainWindow;
 EXTERN LocalLibrary *localLibraryWindow;
 EXTERN ExternalLibrary *externalLibraryWindow;
 EXTERN ProgressWindow *progressWindow;
 
 EXTERN QHash<QString, ComicsSource*> comicsSources;
+EXTERN QList<NetworkJob> networkJobs;
 
 QString decodeHTML(const QString &encoded);
 

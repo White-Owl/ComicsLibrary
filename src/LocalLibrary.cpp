@@ -26,7 +26,9 @@ LocalLibrary::LocalLibrary(QWidget *parent) : QWidget(parent) {
     }
 
     comicsSource->addItems(comicsSources.keys());
+
     comicsSourceModel = qobject_cast<QStandardItemModel*>(comicsSource->model());
+    comicsSourceModel->sort(0);
 }
 
 void LocalLibrary::changeEvent(QEvent *e) {
@@ -168,6 +170,13 @@ void LocalLibrary::updateComicDescription(const QModelIndex &index) {
     }
 }
 
+QFile LocalLibrary::infoFileName(const QString &title) {
+    QString infoFile = QString("%1/%2/%3").arg(libraryPath)
+            .arg(libraryData->data(filterLibrary->mapToSource(libraryView->currentIndex())).toString())
+            .arg(descriptionFileName);
+    return QFile (infoFile);
+}
+
 void LocalLibrary::on_libraryView_activated(const QModelIndex &index) {
     QVariant item = libraryData->data( filterLibrary->mapToSource(index));
     qDebug() << "read" << item;
@@ -193,8 +202,18 @@ void LocalLibrary::on_comicsSource_currentIndexChanged(const QString &text) {
             .arg(descriptionFileName);
     QSettings comicInfo(infoFile, QSettings::IniFormat);
     comicInfo.setValue(cSettingsKey_source, text);
+    comicsDisableUpdates->setChecked(true);
+    comicsDisableUpdates->setEnabled(true);
 }
 
 void LocalLibrary::on_seriesFilter_textChanged(const QString &text) {
     filterLibrary->setFilterWildcard(text);
+}
+
+void LocalLibrary::checkForUpdates(const QString &title) {
+    if(title.isEmpty()) {
+        for(int i=0; i<libraryData->rowCount(); i++) {
+            if
+        }
+    }
 }

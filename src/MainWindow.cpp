@@ -80,3 +80,11 @@ void MainWindow::on_actionMangaJoy_triggered() {
     openExternalSource(comicsSources["MangaJoy"]);
 
 }
+
+void MainWindow::on_actionCheck_for_new_issues_triggered() {
+    if(!localLibraryWindow) {
+        localLibraryWindow = new LocalLibrary(this);
+        openSubWindow(localLibraryWindow);
+    }
+    localLibraryWindow->
+}

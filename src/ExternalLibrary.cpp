@@ -32,7 +32,11 @@ void ExternalLibrary::closeEvent(QCloseEvent *e) {
 void ExternalLibrary::setSource(ComicsSource *source) {
     this->source = source;
     setWindowTitle(source->sourceName);
-    finishedListOfTitles();
+    if(this->source->comicsData.keys().count() == 0) {
+        on_requestCatalogRefresh_clicked();
+    } else {
+        finishedListOfTitles("");
+    }
 }
 
 
@@ -40,7 +44,7 @@ void ExternalLibrary::on_requestCatalogRefresh_clicked() {
     progressWindow->setCaption(QString(tr("Requesting list of titles for %1"))
                                .arg(source->sourceName));
     connect(source, SIGNAL(readyListOfTitles(QString)), this, SLOT(finishedListOfTitles(QString)));
-    QFile cashedListFile(cachedListName);
+    QFile cashedListFile(source->cachedTitlesFileName);
     cashedListFile.remove();
     source->requestListOfTitles();
 }
@@ -53,30 +57,12 @@ void ExternalLibrary::finishedListOfTitles(QString error){
         return;
     }
 
-    QFileInfo cashedListFI(cachedListName);
+    QFileInfo cashedListFI(source->cachedTitlesFileName);
     if(!cashedListFI.exists()) {
-        progressWindow->setCaption(QString(tr("Saving list of titles for %1"))
-                                   .arg(source->sourceName));
-        quint64 totalTitles = source->comicsData.keys().count();
-        quint64 titlesCached = 0;
-        QFile cashedListFile(cachedListName);
-        cashedListFile.open(QIODevice::WriteOnly);
-        QTextStream cashedList(&cashedListFile);
-        QHashIterator<QString, Comics> itr(source->comicsData);
-        while (itr.hasNext()) {
-            itr.next();
-            cashedList << itr.key() << '\t' << itr.value().url << endl;
-            titlesCached++;
-            if(titlesCached%1000 == 0) {
-                progressWindow->setProgress(titlesCached, totalTitles);
-            }
-        }
-        cashedList.flush();
-        catalogRefreshedAt->setText(QDateTime::currentDateTime().toLocalTime().toString());
-        cashedListFile.close();
-    } else {
-        catalogRefreshedAt->setText(cashedListFI.created().toLocalTime().toString());
+        source->saveListOfTitlesToCache();
+        cashedListFI.refresh();
     }
+    catalogRefreshedAt->setText(cashedListFI.created().toLocalTime().toString());
 
     quint64 titlesCount = source->comicsData.keys().count();
     filterModel->setSourceModel(NULL);
