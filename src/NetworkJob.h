@@ -3,7 +3,7 @@
 
 #include "ComicsSource.h"
 
-class NetworkJob {
+class NetworkJob: public QObject {
     Q_OBJECT
 
     ComicsSource *source;
@@ -11,7 +11,7 @@ class NetworkJob {
     QString chapter;
     QString page;
 public:
-    NetworkJob(const ComicsSource *source, const QString &title, const QString &chapter, const QString &page);
+    NetworkJob(ComicsSource *source, const QString &title, const QString &chapter, const QString &page);
 
     void start();
     void pause();

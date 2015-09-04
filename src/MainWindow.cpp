@@ -82,9 +82,5 @@ void MainWindow::on_actionMangaJoy_triggered() {
 }
 
 void MainWindow::on_actionCheck_for_new_issues_triggered() {
-    if(!localLibraryWindow) {
-        localLibraryWindow = new LocalLibrary(this);
-        openSubWindow(localLibraryWindow);
-    }
-    localLibraryWindow->
+    localLibraryWindow->checkAllForUpdates();
 }

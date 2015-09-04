@@ -38,7 +38,10 @@ EXTERN ProgressWindow *progressWindow;
 EXTERN QHash<QString, ComicsSource*> comicsSources;
 EXTERN QList<NetworkJob> networkJobs;
 
+/// Utils.cpp
 QString decodeHTML(const QString &encoded);
+bool readHash(const QString &fileName, QHash<QString, QVariant> &hash);
+bool saveHash(const QString &fileName, QHash<QString, QVariant> &hash);
 
 #endif // MAIN_H
 

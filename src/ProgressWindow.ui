@@ -2,9 +2,6 @@
 <ui version="4.0">
  <class>ProgressWindow</class>
  <widget class="QWidget" name="ProgressWindow">
-  <property name="modal" stdset="0">
-   <bool>false</bool>
-  </property>
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>

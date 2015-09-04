@@ -15,14 +15,16 @@ class LocalLibrary : public QWidget, private Ui::LocalLibrary {
     QIcon defaultComicIcon;
     QStandardItemModel *comicsSourceModel; // used to enable/disable sources
     void updateComicDescription(const QModelIndex &index);
-    QFile infoFileName(const QString &title);
+    QString infoFileName(const QString &title);
+    QHash<QString, QVariant> comicsDescription; // description of the current comics
 
 
 public:
     explicit LocalLibrary(QWidget *parent = 0);
     bool chooseLibraryRoot();
     bool readLibrary();
-    void checkForUpdates(const QString &title = QString());
+    void checkAllForUpdates();
+    void checkForUpdates(const QString &title);
 
 
 protected:
