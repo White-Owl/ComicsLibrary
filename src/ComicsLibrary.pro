@@ -20,7 +20,7 @@ SOURCES += main.cpp\
 	Utils.cpp \
 	ProgressWindow.cpp \
     ComicsSource.cpp \
-    NetworkJob.cpp
+    NetworkJobModel.cpp
 
 HEADERS  += MainWindow.h \
 	main.h \
@@ -28,7 +28,8 @@ HEADERS  += MainWindow.h \
 	ExternalLibrary.h \
 	ComicsSource.h \
 	ProgressWindow.h \
-    NetworkJob.h
+    NetworkJob.h \
+    NetworkJobModel.h
 
 FORMS    += MainWindow.ui \
 	LocalLibrary.ui \

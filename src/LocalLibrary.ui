@@ -223,9 +223,9 @@
        </widget>
       </item>
       <item row="9" column="0">
-       <widget class="QCheckBox" name="comicsDisableUpdates">
+       <widget class="QCheckBox" name="comicsUpdatable">
         <property name="text">
-         <string>Disable Updates</string>
+         <string>Updatable</string>
         </property>
        </widget>
       </item>

@@ -13,7 +13,7 @@ bool readHash(const QString &fileName, QHash<QString, QVariant> &hash) {
     QTextStream in(&f);
     while(!in.atEnd()) {
         QStringList sl = in.readLine().split('=');
-        hash[sl[0]] = sl[1];
+        if(sl.length()==2) hash[ sl[0] ] = sl[1];
     }
     f.close();
     return true;

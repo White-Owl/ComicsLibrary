@@ -32,12 +32,11 @@ protected:
     void closeEvent(QCloseEvent *e);
 
 private slots:
-    void on_libraryView_activated(const QModelIndex &index);
     void libraryView_selectionChanged(const QModelIndex &selected, const QModelIndex &deselected);
     void on_iconSizeSelector_valueChanged(int value);
-    void on_comicsDisableUpdates_toggled(bool checked);
+    void on_comicsUpdatable_toggled(bool checked);
     void on_comicsSource_currentIndexChanged(const QString &text);
-    void on_seriesFilter_textChanged(const QString &arg1);
+    void on_seriesFilter_textChanged(const QString &text);
 };
 
 #endif // LOCALLIBRARY_H

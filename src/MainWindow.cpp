@@ -2,6 +2,7 @@
 #include "main.h"
 #include "MangaHere.h"
 #include "Batoto.h"
+#include "NetworkJobModel.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
@@ -22,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     // by default, no external source is opened
     externalLibraryWindow = NULL;
     progressWindow = new ProgressWindow(this);
+
+    jobView->setModel(new NetworkJobModel());
 }
 
 void MainWindow::changeEvent(QEvent *e) {
@@ -83,4 +86,5 @@ void MainWindow::on_actionMangaJoy_triggered() {
 
 void MainWindow::on_actionCheck_for_new_issues_triggered() {
     localLibraryWindow->checkAllForUpdates();
+
 }

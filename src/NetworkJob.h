@@ -1,24 +1,20 @@
 #ifndef NETWORKJOB_H
 #define NETWORKJOB_H
 
-#include "ComicsSource.h"
+#include <QtCore>
 
-class NetworkJob: public QObject {
-    Q_OBJECT
-
-    ComicsSource *source;
+struct NetworkJob {
+public:
     QString title;
     QString chapter;
     QString page;
-public:
-    NetworkJob(ComicsSource *source, const QString &title, const QString &chapter, const QString &page);
 
-    void start();
-    void pause();
-    void cancel();
-
-signals:
-    void finished(QString error);
+    NetworkJob(const QString &title,
+               const QString &chapter = QString(), const QString &page = QString()) {
+        this->title = title;
+        this->chapter = chapter;
+        this->page = page;
+    }
 };
 
 #endif // NETWORKJOB_H

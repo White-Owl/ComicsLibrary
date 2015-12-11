@@ -36,7 +36,6 @@ EXTERN ExternalLibrary *externalLibraryWindow;
 EXTERN ProgressWindow *progressWindow;
 
 EXTERN QHash<QString, ComicsSource*> comicsSources;
-EXTERN QList<NetworkJob> networkJobs;
 
 /// Utils.cpp
 QString decodeHTML(const QString &encoded);

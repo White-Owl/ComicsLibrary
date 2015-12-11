@@ -124,11 +124,17 @@ void LocalLibrary::updateComicDescription(const QModelIndex &index) {
         QStringList folderContents = folder.entryList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files, QDir::Name);
         QRegExp possibleChapterNames("^[^.]*$|.*\\.cbz");
         QStringList chapters = folderContents.filter(possibleChapterNames);
-
         comicsTotalIssues->setText(QString("%1").arg(chapters.count()));
+        QDateTime lastRefresh(QDate(1900,1,1), QTime(0,0,0));
+        foreach(QString chapterName, chapters) {
+            QFileInfo fi(QString("%1/%2").arg(folder.absolutePath()).arg(chapterName));
+            if(fi.lastModified()>lastRefresh) {
+                lastRefresh = fi.lastModified();
+            }
+        }
+        comicLastUpdated->setText(lastRefresh.toString());
 
         comicsSummary->setText(comicsDescription[cSettingsKey_summary].toString());
-
 
         bool canUpdate = false;
         for(int i=0; i<comicsSourceModel->rowCount(); i++) {
@@ -148,11 +154,11 @@ void LocalLibrary::updateComicDescription(const QModelIndex &index) {
             comicsSource->setCurrentIndex( -1);
         }
         if(comicsSource->currentIndex()<0) {
-            comicsDisableUpdates->setEnabled(false);
-            comicsDisableUpdates->setChecked(true);
+            comicsUpdatable->setEnabled(false);
+            comicsUpdatable->setChecked(false);
         } else {
-            comicsDisableUpdates->setEnabled(true);
-            comicsDisableUpdates->setChecked(comicsDescription[cSettingsKey_updatable].toBool());
+            comicsUpdatable->setEnabled(true);
+            comicsUpdatable->setChecked(comicsDescription[cSettingsKey_updatable].toBool());
         }
 
     } else {
@@ -163,8 +169,8 @@ void LocalLibrary::updateComicDescription(const QModelIndex &index) {
         QFileInfo fi(libraryPath);
         comicLastUpdated->setText(fi.lastModified().toLocalTime().toString());
         comicsTotalIssues->setText(QString("%1").arg(libraryData->rowCount()));
-        comicsDisableUpdates->setEnabled(false);
-        comicsDisableUpdates->setChecked(false);
+        comicsUpdatable->setEnabled(false);
+        comicsUpdatable->setChecked(false);
     }
 }
 
@@ -173,11 +179,6 @@ QString LocalLibrary::infoFileName(const QString &title) {
             .arg(title)
             .arg(descriptionFileName);
     return infoFile;
-}
-
-void LocalLibrary::on_libraryView_activated(const QModelIndex &index) {
-    QVariant item = libraryData->data( filterLibrary->mapToSource(index));
-    qDebug() << "read" << item;
 }
 
 void LocalLibrary::libraryView_selectionChanged(const QModelIndex &selected, const QModelIndex &deselected) {
@@ -197,7 +198,8 @@ void LocalLibrary::on_seriesFilter_textChanged(const QString &text) {
 }
 
 
-void LocalLibrary::on_comicsDisableUpdates_toggled(bool checked) {
+void LocalLibrary::on_comicsUpdatable_toggled(bool checked) {
+    qDebug() << "on_comicsDisableUpdates_toggled" << checked;
     comicsDescription[cSettingsKey_updatable] = checked;
 }
 
@@ -207,13 +209,12 @@ void LocalLibrary::on_comicsSource_currentIndexChanged(const QString &text) {
     if(!libraryView->currentIndex().isValid()) {
         comicsSource->setCurrentIndex(-1);
         comicsSource->setEnabled(false);
-        comicsDisableUpdates->setChecked(true);
-        comicsDisableUpdates->setEnabled(false);
+        comicsUpdatable->setChecked(false);
+        comicsUpdatable->setEnabled(false);
         return;
     }
     comicsDescription[cSettingsKey_source] = text;
-    comicsDescription[cSettingsKey_updatable] = true;
-    comicsDisableUpdates->setEnabled(true);
+    comicsUpdatable->setEnabled(true);
 }
 
 
@@ -228,8 +229,9 @@ void LocalLibrary::checkAllForUpdates() {
 void LocalLibrary::checkForUpdates(const QString &title) {
     QHash<QString, QVariant> description;
     readHash(infoFileName(title), description);
-    if(!description[cSettingsKey_source].toString().isEmpty() && description[cSettingsKey_updatable].toBool()) {
+    if((!description[cSettingsKey_source].toString().isEmpty()) && description[cSettingsKey_updatable].toBool()) {
         qDebug() << "Update" << title;
-
+        comicsSources[description[cSettingsKey_source].toString()]->networkQueue.enqueue(
+                    NetworkJob(description[cSettingsKey_source].toString(), title));
     }
 }

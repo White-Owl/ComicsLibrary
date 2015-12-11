@@ -3,6 +3,7 @@
 
 #include <QtCore>
 #include <QtNetwork>
+#include <NetworkJob.h>
 
 struct Comics {
     // Title for the comics
@@ -22,6 +23,7 @@ struct Comics {
 
     // List of urls and page counts by issue/volume title
     QHash<QString, QPair<QString, int> > issues;
+
 };
 
 
@@ -39,6 +41,8 @@ public:
     // Warning! Do not fill the storage in one run. Fill it up on a per-need basis.
     QHash<QString, Comics> comicsData;
 
+    // list of tasks scheduled for this source
+    QQueue<NetworkJob> networkQueue;
 
     // Fill up the hash with all comics known to the source.
     // Only title and url fields are expected to be completed.
